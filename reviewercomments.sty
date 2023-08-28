@@ -1,0 +1,19 @@
+\ProvidesPackage{reviewercomments}
+\RequirePackage{xcolor}
+\RequirePackage{pgf}
+\RequirePackage{todonotes}
+
+% Define a list of colors for the reviewers
+\def\colorlist{{"red", "blue", "green", "orange", "purple", "brown"}}
+
+\newcommand{\reviewer}[4][true]{%
+  % Determine the color based on the reviewer identifier
+  \pgfmathparse{\colorlist[Mod(\the\numexpr`#2-`A\relax,6)]}%
+  \edef\reviewerColor{\pgfmathresult}%
+  % Create the todo note if the first argument is true
+  \ifthenelse{\equal{#1}{true}}{%
+    \todo[line, color=\reviewerColor!50]{\# #2#3}%
+  }{}%
+  % Color the text
+  {\textcolor{\reviewerColor}{#4}}%
+}
