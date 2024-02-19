@@ -2,38 +2,36 @@
 
 ## Description
 
-This LaTeX package provides an easy and consistent way to highlight text changes in response to reviewer comments during the paper revision process. The package allows you to color-code changes according to the reviewer and link the changes to a marginal note. It supports multiple reviewers and can suppress additional marginal notes while coloring disjoint text within the same paragraph.
+The Reviewer Comments LaTeX Package enhances the manuscript revision process by allowing authors to easily highlight and annotate text changes in response to reviewer feedback. It supports color-coding for different reviewers and integrates marginal notes for quick reference, streamlining the revision workflow in LaTeX documents.
 
 ![image](https://github.com/evmckinney9/latex-revision-changes/assets/47376937/1e72c5f8-4d40-4e11-b10d-433a15fc93bb)
 
 ## Installation
 
-1. Download the `reviewercomments.sty` file from this repository.
-2. Place it in the same directory as your main LaTeX document or in your LaTeX distribution's package directory.
-3. In your LaTeX document, add `\usepackage{reviewercomments}` in the preamble to include the package.
+1. Download `reviewercomments.sty` from the repository.
+2. Place it in your LaTeX document's directory or in your LaTeX distribution's package directory.
+3. Add `\usepackage{reviewercomments}` to your document's preamble.
 
 ## Usage
 
-### Basic Usage
-
-In your LaTeX document, use the `\reviewer` command to highlight text and add a marginal note:
+**Highlight Text and Add Marginal Notes:**
 
 ```latex
-\reviewer{A}{1}{This is some changed text.}
+\reviewer{ReviewerID}{CommentNumber}{Text changed in response to comment.}
 ```
 
-- `A` is the reviewer identifier.
-- `1` is the comment number from that reviewer.
-- `This is some changed text.` is the text that has been changed.
+- `ReviewerID`: Identifier for the reviewer.
+- `CommentNumber`: Comment number or identifier.
+- `Text changed in response to comment.`: The modified text.
 
-### Suppressing Marginal Notes
+**Suppress Additional Marginal Notes:**
 
-If you have multiple changes within the same paragraph that address the same reviewer comment, you can suppress additional marginal notes like this:
+To avoid clutter, suppress extra marginal notes for subsequent changes related to the same comment:
 
 ```latex
-\reviewer[false]{A}{1}{Additional changed text in the same paragraph.}
+\reviewer[false]{ReviewerID}{CommentNumber}{Further text changes.}
 ```
 
 ## Example
 
-See the `example.tex` file in this repository for a full example.
+For a full example, see `example.tex` in this repository.
