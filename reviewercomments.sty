@@ -1,19 +1,57 @@
+% reviewercomments.sty
+%
+% This package provides functionality for highlighting text and adding margin notes corresponding
+% to reviewer comments within LaTeX documents. It employs a color-coded system to distinguish
+% between different reviewers' feedback, ensuring that comments and associated text modifications
+% are easily visible and organized throughout the document revision process.
+
 \ProvidesPackage{reviewercomments}
-\RequirePackage{xcolor}
-\RequirePackage{pgf}
-\RequirePackage{todonotes}
 
-% Define a list of colors for the reviewers
-\def\colorlist{{"red", "blue", "green", "orange", "purple", "brown"}}
+% Load required packages for color handling, margin notes, and conditional logic.
+\RequirePackage{xcolor}    % Enables text coloring.
+\RequirePackage{pgf}       % Used for color list processing.
+\RequirePackage{todonotes} % Allows for the creation of margin notes.
+\RequirePackage{etoolbox}  % Provides conditional commands and programming tools.
 
+% Define a list of distinct colors for use in highlighting text associated with different reviewers.
+% This list can be customized to include any desired colors.
+\def\colorlist{{"red", "blue", "green", "orange", "purple", "brown", "cyan", "magenta", "yellow", "olive", "lime", "violet", "teal"}}
+\newcounter{todocolorcounter}
+\setcounter{todocolorcounter}{0} % Initialize counter for cycling through the color list.
+
+% Set the width of the margin allocated for notes. This value may be adjusted to accommodate different document layouts or margin sizes.
+\setlength{\marginparwidth}{.45in}
+
+% Define the \reviewer command to facilitate the annotation of text with reviewer comments.
+% This command enhances the document revision process by visually distinguishing feedback and
+% associated text modifications.
+%
+% Parameters:
+% - #1 (optional): showTodo, controls whether a margin note is created (default: true).
+% - #2: ReviewerName, a unique identifier for the reviewer.
+% - #3: CommentNumber, a unique identifier for the comment.
+% - #4: CommentText, the text associated with the reviewer's comment.
+%
+% Usage:
+% \reviewer[showTodo]{ReviewerName}{CommentNumber}{CommentText}
+%
+% The optional showTodo parameter allows for selective creation of margin notes, facilitating
+% clear and continuous highlighting of text segments associated with the same reviewer comment,
+% especially useful in cases where a comment spans multiple lines or sections with unchanged text in between.
 \newcommand{\reviewer}[4][true]{%
-  % Determine the color based on the reviewer identifier
-  \pgfmathparse{\colorlist[Mod(\the\numexpr`#2-`A\relax,6)]}%
-  \edef\reviewerColor{\pgfmathresult}%
-  % Create the todo note if the first argument is true
-  \ifthenelse{\equal{#1}{true}}{%
-    \todo[line, color=\reviewerColor!50]{\# #2#3}%
+  % Check if the reviewer's color is already defined; if not, assign a new color from the list.
+  \ifcsdef{todocolor#2}{%
+    \edef\reviewerColor{\csuse{todocolor#2}}% Use existing color
+  }{%
+    \pgfmathparse{\colorlist[\thetodocolorcounter]}% Assign new color
+    \edef\reviewerColor{\pgfmathresult}%
+    \csdef{todocolor#2}{\reviewerColor}%
+    \stepcounter{todocolorcounter}% Increment color counter
+  }%
+  % Create a margin note for the first occurrence of a comment; subsequent related highlights do not generate additional notes.
+  \ifstrequal{#1}{true}{%
+    \todo[linecolor=\reviewerColor!50, backgroundcolor=\reviewerColor!20, size=\small]{\textbf{#2}:#3}%
   }{}%
-  % Color the text
-  {\textcolor{\reviewerColor}{#4}}%
+  % Highlight the associated text with the designated color.
+  \textcolor{\reviewerColor}{#4}%
 }
